@@ -5,6 +5,10 @@ import Dropzone from '@/components/dropzone'
 import { Progress } from '@/components/ui/progress'
 import { motion } from 'framer-motion'
 import { Check } from 'lucide-react'
+import dynamic from "next/dynamic";
+const ProgressBar = dynamic(() => import('@/components/ui/progress'), {
+  ssr: false,
+})
 
 export default function Home() {
   const [result, setResult] = useState(null)
@@ -12,6 +16,7 @@ export default function Home() {
   const [progress, setProgress] = useState(0)
   const [status, setStatus] = useState('')
   const worker = useRef<any>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (!worker.current) {
@@ -55,6 +60,10 @@ export default function Home() {
       worker.current.postMessage({ image })
     }
   }, [])
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   return (
     <div className="bg-main-gradient min-h-screen relative flex flex-col justify-between px-4 sm:px-6 md:px-12">
@@ -107,6 +116,13 @@ export default function Home() {
               result={result}
               setResult={setResult}
               className="mt-10 rounded-2xl border-2 border-dashed border-indigo-400/40 bg-white/10 p-10 shadow-md hover:border-indigo-400 transition-all duration-300 text-center cursor-pointer dropzone transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-indigo-400/30"
+            />
+
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder="Paste image URL or description"
+              className="mt-4 w-full rounded-md border border-gray-300 bg-white py-2 px-4 text-gray-700 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200"
             />
 
             {/* Contact & Portfolio Section */}
